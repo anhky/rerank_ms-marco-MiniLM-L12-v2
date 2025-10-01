@@ -1,0 +1,5 @@
+onnxruntime>=1.23.0
+# transformers>=4.56.2
+tokenizers>=0.22.1
+numpy>=2.3.3
+scipy>=1.16.2
