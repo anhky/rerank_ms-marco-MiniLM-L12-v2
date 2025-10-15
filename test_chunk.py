@@ -87,10 +87,15 @@ logging.info("Đã khởi tạo xong các splitter.")
 # BƯỚC 3: ĐỊNH NGHĨA CÁC HÀM XỬ LÝ
 # ==============================================================================
 
+import regex as re
+import logging
+from typing import List
+from llama_index.core import Document
+
 def clean_document_text(docs: List[Document]) -> List[Document]:
     """
     Hàm này nhận vào một danh sách các Document và thực hiện làm sạch trường text.
-    Loại bỏ các ký tự không mong muốn và khoảng trắng thừa.
+    Loại bỏ các ký tự không mong muốn và khoảng trắng thừa, bao gồm cả các dòng trống.
     """
     logging.info(f"Bắt đầu làm sạch văn bản cho {len(docs)} tài liệu...")
     
@@ -101,6 +106,9 @@ def clean_document_text(docs: List[Document]) -> List[Document]:
     ell_re = re.compile(r"[.\·∙•…_]{4,}")  # Dấu ba chấm dài
     blank3_re = re.compile(r"\n{3,}")  # 3+ dòng trống
     space2_re = re.compile(r" {2,}") # 2+ dấu cách
+    
+    # MỚI: Regex để tìm các dòng chỉ chứa khoảng trắng
+    blank_line_re = re.compile(r"^\s+$", re.MULTILINE)
 
     clean_docs = []
     for d in docs:
@@ -110,6 +118,10 @@ def clean_document_text(docs: List[Document]) -> List[Document]:
         t = fill_line_re.sub("", t)
         t = ell_re.sub("...", t)
         t = blank3_re.sub("\n\n", t)
+        
+        # MỚI: Áp dụng regex để xóa các dòng chỉ chứa khoảng trắng
+        t = blank_line_re.sub("", t)
+        
         t = space2_re.sub(" ", t)
         
         # Tạo lại Document với văn bản đã được làm sạch
