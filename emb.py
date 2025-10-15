@@ -44,7 +44,7 @@ class EmbeddingGemmaONNXEmbedder(BaseEmbedding):
         so.execution_mode = ort.ExecutionMode.ORT_SEQUENTIAL
 
         cpu_count = psutil.cpu_count(logical=True)
-        threads = max(1, (cpu_count + 1) // 2)
+        threads = max(1, cpu_count // 2)
         so.intra_op_num_threads = threads
         so.inter_op_num_threads = 1
 
